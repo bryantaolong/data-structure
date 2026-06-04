@@ -1,4 +1,6 @@
 #include "queue.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 // 创建一个新的队列
 Queue* queue_create() {
