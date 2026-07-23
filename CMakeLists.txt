@@ -7,22 +7,28 @@ project(data-structure C)
 # 设置 C 标准
 set(CMAKE_C_STANDARD 11)
 
-# 定义源文件
-set(SOURCES
-    src/main.c
+# 定义头文件目录
+include_directories(include)
+
+# For MSVC, treat source files as UTF-8 so Chinese comments are parsed correctly
+if(MSVC)
+    add_compile_options(/utf-8)
+endif()
+
+# === DLL 库源文件 ===
+set(LIB_SOURCES
     src/list.c
     src/stack.c
     src/queue.c
     src/custom_string.c
 )
 
-# 定义头文件目录
-include_directories(src)
+# 构建动态库 (DLL)
+add_library(data-structure SHARED ${LIB_SOURCES})
 
-# 添加可执行文件
-add_executable(data-structure ${SOURCES})
+# 定义导出宏：构建 DLL 时启用 dllexport
+target_compile_definitions(data-structure PRIVATE DATA_STRUCTURE_EXPORTS)
 
-# For MSVC, treat source files as UTF-8 so Chinese comments are parsed correctly
-if(MSVC)
-    target_compile_options(data-structure PRIVATE /utf-8)
-endif()
+# 构建可执行文件 (演示/测试用)
+add_executable(data-structure-demo src/main.c)
+target_link_libraries(data-structure-demo PRIVATE data-structure)
